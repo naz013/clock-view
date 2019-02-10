@@ -32,11 +32,11 @@ public class ClockView extends View {
 
     private static final String TAG = "ClockView";
     private static final int SHADOW_RADIUS = 15;
-    private static final float HOUR_ARROW_WIDTH = 0.04f;
+    private static final float HOUR_ARROW_WIDTH = 0.05f;
     private static final float MINUTE_ARROW_WIDTH = 0.03f;
     private static final float SECOND_ARROW_WIDTH = 0.02f;
-    private static final float HOUR_ARROW_LENGTH = 0.75f;
-    private static final float MINUTE_ARROW_LENGTH = 0.55f;
+    private static final float HOUR_ARROW_LENGTH = 0.55f;
+    private static final float MINUTE_ARROW_LENGTH = 0.75f;
     private static final float SECOND_ARROW_LENGTH = 0.35f;
 
     @Nullable
@@ -72,12 +72,6 @@ public class ClockView extends View {
     private int mHour = 3;
     private int mMinute = 0;
     private int mSecond = 0;
-    private int mMinuteArrowLength = 0;
-    private int mMinuteArrowWidth = 0;
-    private int mHourArrowLength = 0;
-    private int mHourArrowWidth = 0;
-    private int mSecondArrowLength = 0;
-    private int mSecondArrowWidth = 0;
 
     @NonNull
     private final Paint mBgPaint = new Paint();
@@ -322,22 +316,28 @@ public class ClockView extends View {
 
     private void drawSecondArrow(Canvas canvas) {
         if (mClockRect != null && !mSecondArrow.isEmpty()) {
-            create(mSecondArrow, mClockRect.centerX(), mClockRect.centerY(), mSecondArrowWidth, mSecondArrowLength, secondAngle());
+            canvas.save();
+            canvas.rotate(secondAngle(), mClockRect.centerX(), mClockRect.centerY());
             canvas.drawPath(mSecondArrow, mArrowPaint);
+            canvas.restore();
         }
     }
 
     private void drawMinuteArrow(Canvas canvas) {
         if (mClockRect != null && !mMinuteArrow.isEmpty()) {
-            create(mMinuteArrow, mClockRect.centerX(), mClockRect.centerY(), mMinuteArrowWidth, mMinuteArrowLength, minuteAngle());
+            canvas.save();
+            canvas.rotate(minuteAngle(), mClockRect.centerX(), mClockRect.centerY());
             canvas.drawPath(mMinuteArrow, mArrowPaint);
+            canvas.restore();
         }
     }
 
     private void drawHourArrow(Canvas canvas) {
         if (mClockRect != null && !mHourArrow.isEmpty()) {
-            create(mHourArrow, mClockRect.centerX(), mClockRect.centerY(), mHourArrowWidth, mHourArrowLength, hourAngle());
+            canvas.save();
+            canvas.rotate(hourAngle(), mClockRect.centerX(), mClockRect.centerY());
             canvas.drawPath(mHourArrow, mArrowPaint);
+            canvas.restore();
         }
     }
 
@@ -407,9 +407,10 @@ public class ClockView extends View {
             if (validateValue(mMinute, 0, 59)) {
                 minutes += mMinute;
             }
-            angle = (float) minutes / 3.6f;
+            angle = (float) minutes * 0.5f;
         }
-        return angle - 90;
+        Log.d(TAG, "hourAngle: " + angle);
+        return angle;
     }
 
     private float minuteAngle() {
@@ -419,7 +420,8 @@ public class ClockView extends View {
         if (validateValue(minute, 0, 59)) {
             angle = (float) minute * 6f;
         }
-        return angle - 90;
+        Log.d(TAG, "minuteAngle: " + angle);
+        return angle;
     }
 
     private float secondAngle() {
@@ -429,7 +431,8 @@ public class ClockView extends View {
         if (validateValue(second, 0, 59)) {
             angle = (float) second * 6f;
         }
-        return angle - 90;
+        Log.d(TAG, "secondAngle: " + angle);
+        return angle;
     }
 
     @SuppressWarnings("SuspiciousNameCombination")
@@ -461,29 +464,27 @@ public class ClockView extends View {
         mLabelPoints[2] = circlePoint(mClockRect.centerX(), mClockRect.centerY(), mLabelLength, 90);
         mLabelPoints[3] = circlePoint(mClockRect.centerX(), mClockRect.centerY(), mLabelLength, 180);
 
-        mHourArrowWidth = (int) ((float) mClockRect.width() * HOUR_ARROW_WIDTH);
-        mHourArrowLength = (int) ((float) mClockRect.width() / 2f * HOUR_ARROW_LENGTH);
+        int mHourArrowWidth = (int) ((float) mClockRect.width() * HOUR_ARROW_WIDTH);
+        int mHourArrowLength = (int) ((float) mClockRect.width() / 2f * HOUR_ARROW_LENGTH);
 
-        mMinuteArrowWidth = (int) ((float) mClockRect.width() * MINUTE_ARROW_WIDTH);
-        mMinuteArrowLength = (int) ((float) mClockRect.width() / 2f * MINUTE_ARROW_LENGTH);
+        int mMinuteArrowWidth = (int) ((float) mClockRect.width() * MINUTE_ARROW_WIDTH);
+        int mMinuteArrowLength = (int) ((float) mClockRect.width() / 2f * MINUTE_ARROW_LENGTH);
 
-        mSecondArrowWidth = (int) ((float) mClockRect.width() * SECOND_ARROW_WIDTH);
-        mSecondArrowLength = (int) ((float) mClockRect.width() / 2f * SECOND_ARROW_LENGTH);
+        int mSecondArrowWidth = (int) ((float) mClockRect.width() * SECOND_ARROW_WIDTH);
+        int mSecondArrowLength = (int) ((float) mClockRect.width() / 2f * SECOND_ARROW_LENGTH);
 
-        create(mSecondArrow, mClockRect.centerX(), mClockRect.centerY(), mSecondArrowWidth, mSecondArrowLength, secondAngle());
-        create(mMinuteArrow, mClockRect.centerX(), mClockRect.centerY(), mMinuteArrowWidth, mMinuteArrowLength, minuteAngle());
-        create(mHourArrow, mClockRect.centerX(), mClockRect.centerY(), mHourArrowWidth, mHourArrowLength, hourAngle());
+        create(mSecondArrow, mClockRect.centerX(), mClockRect.centerY(), mSecondArrowWidth, mSecondArrowLength);
+        create(mMinuteArrow, mClockRect.centerX(), mClockRect.centerY(), mMinuteArrowWidth, mMinuteArrowLength);
+        create(mHourArrow, mClockRect.centerX(), mClockRect.centerY(), mHourArrowWidth, mHourArrowLength);
     }
 
-    private void create(@NonNull Path path, int cx, int cy, int width, int length, float angle) {
-        double rad = Math.toRadians(angle);
-        double circleX = cx + (length * Math.cos(rad));
-        double circleY = cy + (length * Math.sin(rad));
+    private void create(@NonNull Path path, int cx, int cy, int width, int length) {
         path.reset();
-        path.moveTo(cx - (width / 2f), cy);
-        path.lineTo(cx + (width / 2f), cy);
-        path.lineTo((float) circleX, (float) circleY);
+        path.moveTo(cx + (width / 2f), cy);
+        path.lineTo(cx, cy - length);
         path.lineTo(cx - (width / 2f), cy);
+        path.lineTo(cx, cy + (length * 0.1f));
+        path.lineTo(cx + (width / 2f), cy);
         path.close();
     }
 
