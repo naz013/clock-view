@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ClockView">
+        <attr name="cv_backgroundColor" format="color"/>
+        <attr name="cv_circlesColor" format="color"/>
+        <attr name="cv_arrowsColor" format="color"/>
+        <attr name="cv_hourLabelsColor" format="color"/>
+        <attr name="cv_shadowColor" format="color"/>
+        <attr name="cv_showCircles" format="boolean"/>
+        <attr name="cv_showSecondArrow" format="boolean"/>
+        <attr name="cv_showMinuteArrow" format="boolean"/>
+        <attr name="cv_showHourArrow" format="boolean"/>
+        <attr name="cv_showHourLabels" format="boolean"/>
+        <attr name="cv_showRectangle" format="boolean"/>
+        <attr name="cv_showShadow" format="boolean"/>
+    </declare-styleable>
+</resources>
