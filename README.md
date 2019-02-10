@@ -1,5 +1,5 @@
 # Analog Clock View
-[![](https://jitpack.io/v/naz013/emoji-rate-slider.svg)](https://jitpack.io/#naz013/emoji-rate-slider)
+[![](https://jitpack.io/v/naz013/clock-view.svg)](https://jitpack.io/#naz013/clock-view)
 
 <img src="https://github.com/naz013/emoji-rate-slider/raw/master/res/app_icon.png" width="100" alt="Emoji Rate Picker View">
 
@@ -30,7 +30,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.naz013:emoji-rate-slider:1.0.5'
+    implementation 'com.github.naz013:clock-view:1.0.0'
 }
 ```
 
