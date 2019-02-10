@@ -40,8 +40,6 @@ public class ClockView extends View {
     private static final float SECOND_ARROW_LENGTH = 0.35f;
 
     @Nullable
-    private Rect mBorderRect;
-    @Nullable
     private Rect mClockRect;
     @NonNull
     private Rect[] mInnerCirclesRects = new Rect[2];
@@ -67,7 +65,6 @@ public class ClockView extends View {
     private boolean mShowHourLabels = true;
     private boolean mShowCircles = true;
     private boolean mShowShadow = true;
-    private boolean mShowRectangle = false;
 
     private int mHour = 3;
     private int mMinute = 0;
@@ -113,9 +110,19 @@ public class ClockView extends View {
     }
 
     @SuppressWarnings("unused")
+    public boolean isShowHourArrow() {
+        return mShowHourArrow;
+    }
+
+    @SuppressWarnings("unused")
     public void setShowMinuteArrow(boolean showMinuteArrow) {
         this.mShowMinuteArrow = showMinuteArrow;
         this.invalidate();
+    }
+
+    @SuppressWarnings("unused")
+    public boolean isShowMinuteArrow() {
+        return mShowMinuteArrow;
     }
 
     @SuppressWarnings("unused")
@@ -125,9 +132,19 @@ public class ClockView extends View {
     }
 
     @SuppressWarnings("unused")
+    public boolean isShowSecondArrow() {
+        return mShowSecondArrow;
+    }
+
+    @SuppressWarnings("unused")
     public void setShowHourLabels(boolean showHourLabels) {
         this.mShowHourLabels = showHourLabels;
         this.invalidate();
+    }
+
+    @SuppressWarnings("unused")
+    public boolean isShowHourLabels() {
+        return mShowHourLabels;
     }
 
     @SuppressWarnings("unused")
@@ -137,15 +154,19 @@ public class ClockView extends View {
     }
 
     @SuppressWarnings("unused")
+    public boolean isShowCircles() {
+        return mShowShadow;
+    }
+
+    @SuppressWarnings("unused")
     public void setShowShadow(boolean showShadow) {
         this.mShowShadow = showShadow;
         this.invalidate();
     }
 
     @SuppressWarnings("unused")
-    public void setShowRectangle(boolean showRectangle) {
-        this.mShowRectangle = showRectangle;
-        this.invalidate();
+    public boolean isShowShadow() {
+        return mShowShadow;
     }
 
     @SuppressWarnings("unused")
@@ -233,7 +254,6 @@ public class ClockView extends View {
         if (attrs != null) {
             TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.ClockView, defStyleAttr, 0);
             try {
-                mShowRectangle = a.getBoolean(R.styleable.ClockView_cv_showRectangle, mShowRectangle);
                 mShowShadow = a.getBoolean(R.styleable.ClockView_cv_showShadow, mShowShadow);
                 mShowCircles = a.getBoolean(R.styleable.ClockView_cv_showCircles, mShowCircles);
                 mShowHourLabels = a.getBoolean(R.styleable.ClockView_cv_showHourLabels, mShowHourLabels);
@@ -289,9 +309,6 @@ public class ClockView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         long millis = System.currentTimeMillis();
-        if (mShowRectangle) {
-            drawRoundedRect(canvas);
-        }
         if (mShowShadow) {
             drawClockShadow(canvas);
         }
@@ -360,16 +377,6 @@ public class ClockView extends View {
         }
     }
 
-    private void drawText(Canvas canvas, Point p, String text) {
-        Rect r = new Rect();
-        mLabelPaint.setTextAlign(Paint.Align.LEFT);
-        mLabelPaint.getTextBounds(text, 0, text.length(), r);
-
-        float x = p.x - (r.width() / 2f) - r.left;
-        float y = p.y + (r.height() / 2f) - r.bottom;
-        canvas.drawText(text, x, y, mLabelPaint);
-    }
-
     private void drawInnerCircles(Canvas canvas) {
         for (Rect rect : mInnerCirclesRects) {
             if (rect != null) {
@@ -390,10 +397,14 @@ public class ClockView extends View {
         }
     }
 
-    private void drawRoundedRect(Canvas canvas) {
-        if (mBorderRect != null) {
-            canvas.drawRoundRect(mBorderRect.left, mBorderRect.top, mBorderRect.right, mBorderRect.bottom, dp2px(15), dp2px(15), mShadowPaint);
-        }
+    private void drawText(Canvas canvas, Point p, String text) {
+        Rect r = new Rect();
+        mLabelPaint.setTextAlign(Paint.Align.LEFT);
+        mLabelPaint.getTextBounds(text, 0, text.length(), r);
+
+        float x = p.x - (r.width() / 2f) - r.left;
+        float y = p.y + (r.height() / 2f) - r.bottom;
+        canvas.drawText(text, x, y, mLabelPaint);
     }
 
     private float hourAngle() {
@@ -447,9 +458,7 @@ public class ClockView extends View {
     private void processCalculations(int width) {
         if (width <= 0) return;
         int margin = (int) (((float) width * 0.05f) / 2f);
-        mBorderRect = new Rect(margin, margin, width - margin, width - margin);
-        int clockMargin = (int) (((float) width * 0.25f) / 2f);
-        mClockRect = new Rect(clockMargin, clockMargin, width - clockMargin, width - clockMargin);
+        mClockRect = new Rect(margin, margin, width - margin, width - margin);
         int middleCircleMargin = (int) (((float) mClockRect.width() * 0.33f) / 2f);
         int smallCircleMargin = (int) (((float) mClockRect.width() * 0.66f) / 2f);
         mInnerCirclesRects[0] = new Rect(mClockRect.left + middleCircleMargin, mClockRect.top + middleCircleMargin,
