@@ -10,11 +10,11 @@ Inspired by this work - [UpLabs](https://www.uplabs.com/posts/ui-elements-alarm)
 
 Screenshot
 
-<img src="https://github.com/naz013/emoji-rate-slider/raw/master/res/screenshot.png" width="400" alt="Screenshot">
+<img src="https://github.com/naz013/clock-view/raw/master/res/Screenshot_20190210-162121_Clock_View_library.png" width="400" alt="Screenshot">
 
 Sample APP
 --------
-[Download](https://github.com/naz013/emoji-rate-slider/raw/master/app/release/app-release.apk)
+[Download](https://github.com/naz013/clock-view/raw/master/app/release/app-release.apk)
 
 [Google Play](https://play.google.com/store/apps/details?id=com.github.naz013.clockviewlibrary)
 
