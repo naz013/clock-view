@@ -1,14 +1,12 @@
 # Analog Clock View
 [![](https://jitpack.io/v/naz013/clock-view.svg)](https://jitpack.io/#naz013/clock-view)
 
-<img src="https://github.com/naz013/emoji-rate-slider/raw/master/res/app_icon.png" width="100" alt="Emoji Rate Picker View">
+<img src="https://github.com/naz013/clock-view/raw/master/app/src/main/ic_launcher-web.png" width="100" alt="Analog Clock View">
 
 Simple analog clock view library for Android.
 
 Inspired by this work - [UpLabs](https://www.uplabs.com/posts/ui-elements-alarm)
 --------
-
-[![](https://jitpack.io/v/naz013/emoji-rate-slider.svg)](https://jitpack.io/#naz013/emoji-rate-slider)
 
 Screenshot
 
@@ -18,7 +16,7 @@ Sample APP
 --------
 [Download](https://github.com/naz013/emoji-rate-slider/raw/master/app/release/app-release.apk)
 
-[Google Play](https://play.google.com/store/apps/details?id=com.github.naz013.emojirateslider)
+[Google Play](https://play.google.com/store/apps/details?id=com.github.naz013.clockviewlibrary)
 
 
 Download
