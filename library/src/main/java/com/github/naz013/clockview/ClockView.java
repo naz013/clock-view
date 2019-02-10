@@ -26,7 +26,7 @@ import android.view.WindowManager;
 import java.util.Calendar;
 
 /**
- * Simple Clock view based on canvas. Height of view is always same as width.
+ * Simple Analogue Clock view based on canvas. Height of view is always same as width.
  */
 public class ClockView extends View {
 

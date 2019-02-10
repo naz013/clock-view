@@ -1,9 +1,13 @@
 package com.github.naz013.clockviewlibrary;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.github.naz013.clockview.ClockView;
@@ -47,5 +51,26 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mHandler.removeCallbacks(mRunnable);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_more) {
+            showGithub();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void showGithub() {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("https://github.com/naz013/clock-view"));
+        startActivity(intent);
     }
 }
