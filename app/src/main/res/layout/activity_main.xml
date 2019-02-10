@@ -8,13 +8,15 @@
     tools:context=".MainActivity">
 
     <com.github.naz013.clockview.ClockView
+        android:id="@+id/clockView"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        app:cv_arrowsColor="#60ff0000"
+        app:cv_arrowsColor="#727889"
         app:cv_backgroundColor="#ffffff"
-        app:cv_circlesColor="#00FF00"
-        app:cv_hourLabelsColor="#0000ff"
-        app:cv_shadowColor="#20FF0000"
+        app:cv_circlesColor="#7E8493"
+        app:cv_hourLabelsColor="#727889"
+        app:cv_labelTextSize="15sp"
+        app:cv_shadowColor="#807E8493"
         app:cv_showCircles="true"
         app:cv_showHourArrow="true"
         app:cv_showHourLabels="true"

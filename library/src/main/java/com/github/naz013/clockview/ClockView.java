@@ -2,10 +2,12 @@ package com.github.naz013.clockview;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.ColorInt;
@@ -30,9 +32,9 @@ public class ClockView extends View {
 
     private static final String TAG = "ClockView";
     private static final int SHADOW_RADIUS = 15;
-    private static final float HOUR_ARROW_WIDTH = 0.05f;
-    private static final float MINUTE_ARROW_WIDTH = 0.05f;
-    private static final float SECOND_ARROW_WIDTH = 0.05f;
+    private static final float HOUR_ARROW_WIDTH = 0.04f;
+    private static final float MINUTE_ARROW_WIDTH = 0.03f;
+    private static final float SECOND_ARROW_WIDTH = 0.02f;
     private static final float HOUR_ARROW_LENGTH = 0.75f;
     private static final float MINUTE_ARROW_LENGTH = 0.55f;
     private static final float SECOND_ARROW_LENGTH = 0.35f;
@@ -49,6 +51,8 @@ public class ClockView extends View {
     private Path mMinuteArrow = new Path();
     @NonNull
     private Path mSecondArrow = new Path();
+    @NonNull
+    private Point[] mLabelPoints = new Point[4];
 
     @ColorInt
     private int mBgColor = Color.WHITE;
@@ -181,7 +185,7 @@ public class ClockView extends View {
     @SuppressWarnings("unused")
     public void setShadowColor(@ColorInt int shadowColor) {
         this.mShadowColor = shadowColor;
-        this.mShadowPaint.setShadowLayer(dp2px(SHADOW_RADIUS), 0, 0, shadowColor);
+        this.mShadowPaint.setColor(shadowColor);
         this.invalidate();
     }
 
@@ -231,6 +235,7 @@ public class ClockView extends View {
 
     private void initView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         initTime(System.currentTimeMillis());
+        int textSize = 25;
         if (attrs != null) {
             TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.ClockView, defStyleAttr, 0);
             try {
@@ -247,14 +252,15 @@ public class ClockView extends View {
                 mArrowsColor = a.getColor(R.styleable.ClockView_cv_arrowsColor, mArrowsColor);
                 mHourLabelsColor = a.getColor(R.styleable.ClockView_cv_hourLabelsColor, mHourLabelsColor);
                 mCirclesColor = a.getColor(R.styleable.ClockView_cv_circlesColor, mCirclesColor);
+                textSize = a.getDimensionPixelSize(R.styleable.ClockView_cv_labelTextSize, textSize);
             } catch (Exception ignored) {
             } finally {
                 a.recycle();
             }
         }
         mShadowPaint.setAntiAlias(true);
-        mShadowPaint.setColor(mBgColor);
-        mShadowPaint.setShadowLayer(dp2px(SHADOW_RADIUS), 0, 0, mShadowColor);
+        mShadowPaint.setColor(mShadowColor);
+        mShadowPaint.setMaskFilter(new BlurMaskFilter(dp2px(SHADOW_RADIUS), BlurMaskFilter.Blur.OUTER));
         mShadowPaint.setStyle(Paint.Style.FILL);
         setLayerType(LAYER_TYPE_SOFTWARE, mShadowPaint);
 
@@ -264,7 +270,8 @@ public class ClockView extends View {
 
         mLabelPaint.setAntiAlias(true);
         mLabelPaint.setColor(mHourLabelsColor);
-        mLabelPaint.setStyle(Paint.Style.STROKE);
+        mLabelPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        mLabelPaint.setTextSize(textSize);
 
         mCirclePaint.setAntiAlias(true);
         mCirclePaint.setColor(mCirclesColor);
@@ -314,28 +321,53 @@ public class ClockView extends View {
     }
 
     private void drawSecondArrow(Canvas canvas) {
-        if (mShowSecondArrow && mClockRect != null && !mSecondArrow.isEmpty()) {
+        if (mClockRect != null && !mSecondArrow.isEmpty()) {
             create(mSecondArrow, mClockRect.centerX(), mClockRect.centerY(), mSecondArrowWidth, mSecondArrowLength, secondAngle());
             canvas.drawPath(mSecondArrow, mArrowPaint);
         }
     }
 
     private void drawMinuteArrow(Canvas canvas) {
-        if (mShowMinuteArrow && mClockRect != null && !mMinuteArrow.isEmpty()) {
+        if (mClockRect != null && !mMinuteArrow.isEmpty()) {
             create(mMinuteArrow, mClockRect.centerX(), mClockRect.centerY(), mMinuteArrowWidth, mMinuteArrowLength, minuteAngle());
             canvas.drawPath(mMinuteArrow, mArrowPaint);
         }
     }
 
     private void drawHourArrow(Canvas canvas) {
-        if (mShowHourArrow && mClockRect != null && !mHourArrow.isEmpty()) {
+        if (mClockRect != null && !mHourArrow.isEmpty()) {
             create(mHourArrow, mClockRect.centerX(), mClockRect.centerY(), mHourArrowWidth, mHourArrowLength, hourAngle());
             canvas.drawPath(mHourArrow, mArrowPaint);
         }
     }
 
     private void drawHourLabels(Canvas canvas) {
+        Point p = mLabelPoints[0];
+        if (p != null) {
+            drawText(canvas, p, "12");
+        }
+        p = mLabelPoints[1];
+        if (p != null) {
+            drawText(canvas, p, "3");
+        }
+        p = mLabelPoints[2];
+        if (p != null) {
+            drawText(canvas, p, "6");
+        }
+        p = mLabelPoints[3];
+        if (p != null) {
+            drawText(canvas, p, "9");
+        }
+    }
 
+    private void drawText(Canvas canvas, Point p, String text) {
+        Rect r = new Rect();
+        mLabelPaint.setTextAlign(Paint.Align.LEFT);
+        mLabelPaint.getTextBounds(text, 0, text.length(), r);
+
+        float x = p.x - (r.width() / 2f) - r.left;
+        float y = p.y + (r.height() / 2f) - r.bottom;
+        canvas.drawText(text, x, y, mLabelPaint);
     }
 
     private void drawInnerCircles(Canvas canvas) {
@@ -377,8 +409,7 @@ public class ClockView extends View {
             }
             angle = (float) minutes / 3.6f;
         }
-        Log.d(TAG, "hourAngle: " + angle);
-        return angle;
+        return angle - 90;
     }
 
     private float minuteAngle() {
@@ -388,8 +419,7 @@ public class ClockView extends View {
         if (validateValue(minute, 0, 59)) {
             angle = (float) minute * 6f;
         }
-        Log.d(TAG, "minuteAngle: " + angle);
-        return angle;
+        return angle - 90;
     }
 
     private float secondAngle() {
@@ -399,8 +429,7 @@ public class ClockView extends View {
         if (validateValue(second, 0, 59)) {
             angle = (float) second * 6f;
         }
-        Log.d(TAG, "secondAngle: " + angle);
-        return angle;
+        return angle - 90;
     }
 
     @SuppressWarnings("SuspiciousNameCombination")
@@ -415,10 +444,8 @@ public class ClockView extends View {
     private void processCalculations(int width) {
         if (width <= 0) return;
         int margin = (int) (((float) width * 0.05f) / 2f);
-        Log.d(TAG, "processCalculations: rectangle margin -> " + margin);
         mBorderRect = new Rect(margin, margin, width - margin, width - margin);
         int clockMargin = (int) (((float) width * 0.25f) / 2f);
-        Log.d(TAG, "processCalculations: clock margin -> " + clockMargin);
         mClockRect = new Rect(clockMargin, clockMargin, width - clockMargin, width - clockMargin);
         int middleCircleMargin = (int) (((float) mClockRect.width() * 0.33f) / 2f);
         int smallCircleMargin = (int) (((float) mClockRect.width() * 0.66f) / 2f);
@@ -426,6 +453,13 @@ public class ClockView extends View {
                 mClockRect.right - middleCircleMargin, mClockRect.bottom - middleCircleMargin);
         mInnerCirclesRects[1] = new Rect(mClockRect.left + smallCircleMargin, mClockRect.top + smallCircleMargin,
                 mClockRect.right - smallCircleMargin, mClockRect.bottom - smallCircleMargin);
+
+        int mLabelLength = (int) ((float) mClockRect.width() * 0.85f / 2f);
+
+        mLabelPoints[0] = circlePoint(mClockRect.centerX(), mClockRect.centerY(), mLabelLength, 270);
+        mLabelPoints[1] = circlePoint(mClockRect.centerX(), mClockRect.centerY(), mLabelLength, 0);
+        mLabelPoints[2] = circlePoint(mClockRect.centerX(), mClockRect.centerY(), mLabelLength, 90);
+        mLabelPoints[3] = circlePoint(mClockRect.centerX(), mClockRect.centerY(), mLabelLength, 180);
 
         mHourArrowWidth = (int) ((float) mClockRect.width() * HOUR_ARROW_WIDTH);
         mHourArrowLength = (int) ((float) mClockRect.width() / 2f * HOUR_ARROW_LENGTH);
@@ -442,14 +476,22 @@ public class ClockView extends View {
     }
 
     private void create(@NonNull Path path, int cx, int cy, int width, int length, float angle) {
-        double circleX = cx + (length * Math.cos(Math.toRadians(angle)));
-        double circleY = cy + (length * Math.sin(Math.toRadians(angle)));
+        double rad = Math.toRadians(angle);
+        double circleX = cx + (length * Math.cos(rad));
+        double circleY = cy + (length * Math.sin(rad));
         path.reset();
         path.moveTo(cx - (width / 2f), cy);
         path.lineTo(cx + (width / 2f), cy);
         path.lineTo((float) circleX, (float) circleY);
         path.lineTo(cx - (width / 2f), cy);
         path.close();
+    }
+
+    private Point circlePoint(int cx, int cy, int length, float angle) {
+        double rad = Math.toRadians(angle);
+        double circleX = cx + (length * Math.cos(rad));
+        double circleY = cy + (length * Math.sin(rad));
+        return new Point((int) circleX, (int) circleY);
     }
 
     @Px

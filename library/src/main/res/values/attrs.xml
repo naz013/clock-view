@@ -13,5 +13,6 @@
         <attr name="cv_showHourLabels" format="boolean"/>
         <attr name="cv_showRectangle" format="boolean"/>
         <attr name="cv_showShadow" format="boolean"/>
+        <attr name="cv_labelTextSize" format="dimension"/>
     </declare-styleable>
 </resources>
