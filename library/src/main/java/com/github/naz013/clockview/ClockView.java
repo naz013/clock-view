@@ -1,7 +1,6 @@
 package com.github.naz013.clockview;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -251,26 +250,19 @@ public class ClockView extends View {
     private void initView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         initTime(System.currentTimeMillis());
         int textSize = 25;
-        if (attrs != null) {
-            TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.ClockView, defStyleAttr, 0);
-            try {
-                mShowShadow = a.getBoolean(R.styleable.ClockView_cv_showShadow, mShowShadow);
-                mShowCircles = a.getBoolean(R.styleable.ClockView_cv_showCircles, mShowCircles);
-                mShowHourLabels = a.getBoolean(R.styleable.ClockView_cv_showHourLabels, mShowHourLabels);
-                mShowSecondArrow = a.getBoolean(R.styleable.ClockView_cv_showSecondArrow, mShowSecondArrow);
-                mShowMinuteArrow = a.getBoolean(R.styleable.ClockView_cv_showMinuteArrow, mShowMinuteArrow);
-                mShowHourArrow = a.getBoolean(R.styleable.ClockView_cv_showHourArrow, mShowHourArrow);
+                mShowShadow =  mShowShadow;
+                mShowCircles = mShowCircles;
+                mShowHourLabels = mShowHourLabels;
+                mShowSecondArrow = mShowSecondArrow;
+                mShowMinuteArrow = mShowMinuteArrow;
+                mShowHourArrow = mShowHourArrow;
 
-                mBgColor = a.getColor(R.styleable.ClockView_cv_backgroundColor, mBgColor);
-                mShadowColor = a.getColor(R.styleable.ClockView_cv_shadowColor, mShadowColor);
-                mArrowsColor = a.getColor(R.styleable.ClockView_cv_arrowsColor, mArrowsColor);
-                mHourLabelsColor = a.getColor(R.styleable.ClockView_cv_hourLabelsColor, mHourLabelsColor);
-                mCirclesColor = a.getColor(R.styleable.ClockView_cv_circlesColor, mCirclesColor);
-                textSize = a.getDimensionPixelSize(R.styleable.ClockView_cv_labelTextSize, textSize);
-            } catch (Exception ignored) {
-            } finally {
-                a.recycle();
-            }
+                mBgColor = mBgColor;
+                mShadowColor = mShadowColor;
+                mArrowsColor = mArrowsColor;
+                mHourLabelsColor = mHourLabelsColor;
+                mCirclesColor = mCirclesColor;
+                textSize = textSize;
         }
         mShadowPaint.setAntiAlias(true);
         mShadowPaint.setColor(mShadowColor);
